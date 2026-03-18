@@ -54,7 +54,7 @@ function Home() {
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.titulo}>📋 Publicaciones</h2>
+      <h2 style={styles.titulo}> Publicaciones</h2>
 
       <div style={styles.filtros}>
         <select style={styles.select} value={filtroCurso} onChange={e => filtrarPorCurso(e.target.value)}>
@@ -74,11 +74,11 @@ function Home() {
             <span style={styles.autor} onClick={() => navigate(`/perfil/${p.registro_academico}`)}>{p.nombres} {p.apellidos}</span>
             <span style={styles.fecha}>{new Date(p.fecha_creacion).toLocaleDateString()}</span>
           </div>
-          {p.nombre_curso && <span style={styles.tag}>📖 {p.nombre_curso}</span>}
-          {p.nombre_catedratico && <span style={styles.tag}>👨‍🏫 {p.nombre_catedratico}</span>}
+          {p.nombre_curso && <span style={styles.tag}> {p.nombre_curso}</span>}
+          {p.nombre_catedratico && <span style={styles.tag}> {p.nombre_catedratico}</span>}
           <p style={styles.mensaje}>{p.mensaje}</p>
           <button style={styles.btnComentarios} onClick={() => cargarComentarios(p.id)}>
-            💬 Ver comentarios
+             Ver comentarios
           </button>
           {comentarios[p.id] && (
             <div style={styles.comentariosSection}>

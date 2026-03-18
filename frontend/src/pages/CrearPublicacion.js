@@ -33,12 +33,12 @@ function CrearPublicacion() {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h2 style={styles.titulo}>✏️ Nueva Publicación</h2>
+        <h2 style={styles.titulo}> Nueva Publicación</h2>
 
         <label style={styles.label}>¿Sobre qué querés publicar?</label>
         <div style={styles.tipoContainer}>
-          <button style={tipo === 'curso' ? styles.btnActivo : styles.btnInactivo} onClick={() => setTipo('curso')}>📖 Curso</button>
-          <button style={tipo === 'catedratico' ? styles.btnActivo : styles.btnInactivo} onClick={() => setTipo('catedratico')}>👨‍🏫 Catedrático</button>
+          <button style={tipo === 'curso' ? styles.btnActivo : styles.btnInactivo} onClick={() => setTipo('curso')}> Curso</button>
+          <button style={tipo === 'catedratico' ? styles.btnActivo : styles.btnInactivo} onClick={() => setTipo('catedratico')}> Catedrático</button>
         </div>
 
         {tipo === 'curso' && (

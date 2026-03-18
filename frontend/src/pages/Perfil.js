@@ -55,14 +55,14 @@ function Perfil() {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <div style={styles.avatar}>👤</div>
+        <div style={styles.avatar}></div>
         <h2 style={styles.nombre}>{perfil.nombres} {perfil.apellidos}</h2>
         <p style={styles.registro}>Registro: {perfil.registro_academico}</p>
 
         {!editando ? (
           <>
-            <p style={styles.info}>📧 {perfil.correo}</p>
-            {esMiPerfil && <button style={styles.btnEditar} onClick={() => setEditando(true)}>✏️ Editar perfil</button>}
+            <p style={styles.info}> {perfil.correo}</p>
+            {esMiPerfil && <button style={styles.btnEditar} onClick={() => setEditando(true)}> Editar perfil</button>}
           </>
         ) : (
           <div style={styles.formEditar}>
@@ -77,7 +77,7 @@ function Perfil() {
       </div>
 
       <div style={styles.card}>
-        <h3 style={styles.subtitulo}>📚 Cursos Aprobados</h3>
+        <h3 style={styles.subtitulo}> Cursos Aprobados</h3>
         <p style={styles.creditos}>Total de créditos: <strong>{totalCreditos}</strong></p>
 
         {cursosAprobados.length === 0 ? (

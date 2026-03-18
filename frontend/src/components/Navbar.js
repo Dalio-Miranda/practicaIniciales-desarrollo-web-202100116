@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
   const navigate = useNavigate();
-  const usuario = JSON.parse(localStorage.getItem('usuario'));
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -17,7 +16,10 @@ function Navbar() {
       <div style={styles.links}>
         <button style={styles.btn} onClick={() => navigate('/home')}>Inicio</button>
         <button style={styles.btn} onClick={() => navigate('/crear-publicacion')}>Nueva Publicación</button>
-        <button style={styles.btn} onClick={() => navigate(`/perfil/${usuario?.registro_academico}`)}>Mi Perfil</button>
+        <button style={styles.btn} onClick={() => {
+          const u = JSON.parse(localStorage.getItem('usuario'));
+          navigate(`/perfil/${u?.registro_academico}`);
+        }}>Mi Perfil</button>
         <button style={styles.btnLogout} onClick={handleLogout}>Cerrar Sesión</button>
       </div>
     </div>
