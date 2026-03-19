@@ -72,3 +72,64 @@ INSERT INTO catedraticos (nombres, apellidos) VALUES
 ('María José', 'Pérez Rodríguez'),
 ('Roberto', 'Morales Castro'),
 ('Ana Lucía', 'González Fuentes');
+
+--------------------------------------------------------
+-- Consultas SQL - CaterdrApp
+--------------------------------------------------------
+-- Consulta 1: Obtener todas las publicaciones con nombre de usuario y catedratico
+SELECT 
+    p.id,
+    p.mensaje,
+    p.fecha_creacion,
+    CONCAT(u.nombres, ' ', u.apellidos) AS nombre_usuario,
+    CONCAT(cat.nombres, ' ', cat.apellidos) AS nombre_catedratico,
+    c.nombre AS nombre_curso
+FROM publicaciones p
+JOIN usuarios u ON p.usuario_id = u.id
+LEFT JOIN catedraticos cat ON p.catedratico_id = cat.id
+LEFT JOIN cursos c ON p.curso_id = c.id
+ORDER BY p.fecha_creacion DESC;
+
+-- Consulta 2: Obtener los cursos aprobados de un usuario con total de creditos
+SELECT 
+    u.nombres,
+    u.apellidos,
+    u.registro_academico,
+    c.nombre AS curso,
+    c.creditos,
+    SUM(c.creditos) OVER (PARTITION BY u.id) AS total_creditos
+FROM cursos_aprobados ca
+JOIN usuarios u ON ca.usuario_id = u.id
+JOIN cursos c ON ca.curso_id = c.id
+ORDER BY u.id;
+
+-- Consulta 3: Obtener comentarios de una publicacion con datos del usuario
+SELECT 
+    com.id,
+    com.mensaje,
+    com.fecha_creacion,
+    CONCAT(u.nombres, ' ', u.apellidos) AS nombre_usuario,
+    p.mensaje AS publicacion_original
+FROM comentarios com
+JOIN usuarios u ON com.usuario_id = u.id
+JOIN publicaciones p ON com.publicacion_id = p.id
+ORDER BY com.fecha_creacion ASC;
+
+-- Consulta 4: Contar publicaciones por catedratico
+SELECT 
+    CONCAT(cat.nombres, ' ', cat.apellidos) AS catedratico,
+    COUNT(p.id) AS total_publicaciones
+FROM catedraticos cat
+LEFT JOIN publicaciones p ON cat.id = p.catedratico_id
+GROUP BY cat.id
+ORDER BY total_publicaciones DESC;
+
+-- Consulta 5: Obtener todos los usuarios registrados
+SELECT 
+    id,
+    registro_academico,
+    CONCAT(nombres, ' ', apellidos) AS nombre_completo,
+    correo,
+    fecha_registro
+FROM usuarios
+ORDER BY fecha_registro DESC;
