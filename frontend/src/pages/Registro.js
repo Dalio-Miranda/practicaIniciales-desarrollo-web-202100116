@@ -2,19 +2,30 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
+const API = process.env.REACT_APP_API_URL;
+
 function Registro() {
   const [form, setForm] = useState({ registro_academico: '', nombres: '', apellidos: '', correo: '', contrasena: '' });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleRegistro = async () => {
+    if (!form.registro_academico || !form.nombres || !form.apellidos || !form.correo || !form.contrasena) {
+      setError('Por favor llena todos los campos.');
+      return;
+    }
+    setLoading(true);
+    setError('');
     try {
-      await axios.post('http://localhost:3000/api/auth/registro', form);
+      await axios.post(`${API}/api/auth/registro`, form);
       navigate('/');
     } catch (err) {
       setError('Error al registrarse. El registro o correo ya existe.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -22,15 +33,17 @@ function Registro() {
     <div style={styles.container}>
       <div style={styles.card}>
         <h2 style={styles.title}>CREAR CUENTA</h2>
-        <h3 style={styles.subtitle}>Ingeniería USAC</h3>
+        <h3 style={styles.subtitle}>Ingenieria USAC</h3>
         {error && <p style={styles.error}>{error}</p>}
-        <input style={styles.input} name="registro_academico" placeholder="Registro Académico" onChange={handleChange} />
+        <input style={styles.input} name="registro_academico" placeholder="Registro Academico" onChange={handleChange} />
         <input style={styles.input} name="nombres" placeholder="Nombres" onChange={handleChange} />
         <input style={styles.input} name="apellidos" placeholder="Apellidos" onChange={handleChange} />
-        <input style={styles.input} name="correo" placeholder="Correo electrónico" onChange={handleChange} />
-        <input style={styles.input} type="password" name="contrasena" placeholder="Contraseña" onChange={handleChange} />
-        <button style={styles.button} onClick={handleRegistro}>REGISTRARSE</button>
-        <p style={styles.link}>¿Ya tenés cuenta? <Link to="/">Iniciá sesión</Link></p>
+        <input style={styles.input} name="correo" placeholder="Correo electronico" onChange={handleChange} />
+        <input style={styles.input} type="password" name="contrasena" placeholder="Contrasena" onChange={handleChange} />
+        <button style={styles.button} onClick={handleRegistro} disabled={loading}>
+          {loading ? 'Registrando...' : 'REGISTRARSE'}
+        </button>
+        <p style={styles.link}>Ya tenes cuenta? <Link to="/">Inicia sesion</Link></p>
       </div>
     </div>
   );

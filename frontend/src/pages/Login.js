@@ -2,15 +2,24 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 
+const API = process.env.REACT_APP_API_URL;
+
 function Login() {
   const [registro, setRegistro] = useState('');
   const [contrasena, setContrasena] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
+    if (!registro || !contrasena) {
+      setError('Por favor llena todos los campos.');
+      return;
+    }
+    setLoading(true);
+    setError('');
     try {
-      const res = await axios.post('http://localhost:3000/api/auth/login', {
+      const res = await axios.post(`${API}/api/auth/login`, {
         registro_academico: registro,
         contrasena: contrasena
       });
@@ -18,20 +27,24 @@ function Login() {
       localStorage.setItem('usuario', JSON.stringify(res.data.usuario));
       navigate('/home');
     } catch (err) {
-      setError('Registro o contraseña incorrectos');
+      setError('Registro o contrasena incorrectos.');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h2 style={styles.title}>INICIAR SESIÓN</h2>
-        <h3 style={styles.subtitle}>Ingeniería USAC</h3>
+        <h2 style={styles.title}>INICIAR SESION</h2>
+        <h3 style={styles.subtitle}>Ingenieria USAC</h3>
         {error && <p style={styles.error}>{error}</p>}
-        <input style={styles.input} placeholder="Registro Académico" value={registro} onChange={e => setRegistro(e.target.value)} />
-        <input style={styles.input} type="password" placeholder="Contraseña" value={contrasena} onChange={e => setContrasena(e.target.value)} />
-        <button style={styles.button} onClick={handleLogin}>INICIAR SESIÓN</button>
-        <p style={styles.link}>¿No tenés cuenta? <Link to="/registro">Registrate</Link></p>
+        <input style={styles.input} placeholder="Registro Academico" value={registro} onChange={e => setRegistro(e.target.value)} />
+        <input style={styles.input} type="password" placeholder="Contrasena" value={contrasena} onChange={e => setContrasena(e.target.value)} />
+        <button style={styles.button} onClick={handleLogin} disabled={loading}>
+          {loading ? 'Iniciando...' : 'INICIAR SESION'}
+        </button>
+        <p style={styles.link}>No tenes cuenta? <Link to="/registro">Registrate</Link></p>
       </div>
     </div>
   );
