@@ -1,0 +1,106 @@
+
+<style>
+#erd2 { padding: 1rem 0; background: white; border-radius: 8px; }
+#erd2 svg { width: 100%; }
+</style>
+<div id="erd2"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: false,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: '#1F3864',
+    textColor: '#1F3864',
+    primaryColor: '#D6E4F0',
+    primaryTextColor: '#1F3864',
+    primaryBorderColor: '#2E75B6',
+    secondaryColor: '#E2EFDA',
+    tertiaryColor: '#FCE4D6',
+    background: '#ffffff',
+    mainBkg: '#D6E4F0',
+    nodeBorder: '#2E75B6',
+    clusterBkg: '#f5f5f5',
+    titleColor: '#1F3864',
+    edgeLabelBackground: '#ffffff',
+    attributeBackgroundColorEven: '#EAF3FB',
+    attributeBackgroundColorOdd: '#ffffff',
+  },
+});
+const { svg } = await mermaid.render('erd-svg2', `erDiagram
+  usuarios {
+    int id PK
+    varchar registro_academico
+    varchar nombres
+    varchar apellidos
+    varchar correo
+    varchar contrasena
+    datetime fecha_registro
+  }
+  catedraticos {
+    int id PK
+    varchar nombres
+    varchar apellidos
+  }
+  cursos {
+    int id PK
+    varchar nombre
+    int creditos
+  }
+  publicaciones {
+    int id PK
+    int usuario_id FK
+    int catedratico_id FK
+    int curso_id FK
+    text mensaje
+    datetime fecha_creacion
+  }
+  comentarios {
+    int id PK
+    int publicacion_id FK
+    int usuario_id FK
+    text mensaje
+    datetime fecha_creacion
+  }
+  cursos_aprobados {
+    int id PK
+    int usuario_id FK
+    int curso_id FK
+  }
+  usuarios ||--o{ publicaciones : "crea"
+  usuarios ||--o{ comentarios : "escribe"
+  usuarios ||--o{ cursos_aprobados : "aprueba"
+  catedraticos ||--o{ publicaciones : "evalua"
+  cursos ||--o{ publicaciones : "aparece en"
+  cursos ||--o{ cursos_aprobados : "pertenece"
+  publicaciones ||--o{ comentarios : "recibe"
+`);
+document.getElementById('erd2').innerHTML = svg;
+document.querySelectorAll('#erd2 svg .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+document.querySelectorAll('#erd2 svg .row-rect-odd path, #erd2 svg .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>
